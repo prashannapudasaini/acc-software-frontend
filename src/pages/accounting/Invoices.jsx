@@ -1,7 +1,7 @@
 import React from 'react';
-import InvoiceFilters from '../components/invoices/InvoiceFilters';
-import InvoiceTable from '../components/invoices/InvoiceTable';
-import Button from '../components/ui/Button';
+import InvoiceFilters from '../../components/accounting/invoices/InvoiceFilters';
+import InvoiceTable from '../../components/accounting/invoices/InvoiceTable';
+import Button from '../../components/erp/ui/Button';
 
 const Invoices = () => {
   return (

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Card, CardHeader, CardContent } from '../ui/Card';
-import Button from '../ui/Button';
+import { Card, CardHeader, CardContent } from '../../erp/ui/Card';
+import Button from '../../erp/ui/Button';
 import StatusBadge from '../invoices/StatusBadge';
 
 const statementLines = [

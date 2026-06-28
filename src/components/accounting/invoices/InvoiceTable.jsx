@@ -1,6 +1,6 @@
 import React from 'react';
 import StatusBadge from './StatusBadge';
-import Button from '../ui/Button';
+import Button from '../../erp/ui/Button';
 
 // Extended mock data for a robust table view
 const mockInvoices = [

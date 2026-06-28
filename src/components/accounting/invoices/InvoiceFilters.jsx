@@ -1,5 +1,5 @@
 import React from 'react';
-import Button from '../ui/Button';
+import Button from '../../erp/ui/Button';
 
 const InvoiceFilters = () => {
   return (

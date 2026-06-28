@@ -1,13 +1,16 @@
 /**
- * Formats a number to USD currency
+ * Formats a number to NRs. currency
  */
 export const formatCurrency = (amount) => {
-  if (amount === null || amount === undefined) return '$0.00';
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  if (amount === null || amount === undefined) return 'NRs. 0.00';
+  
+  // Using toLocaleString for the commas, but prepending NRs. manually
+  const formattedNumber = amount.toLocaleString('en-IN', {
     minimumFractionDigits: 2,
-  }).format(amount);
+    maximumFractionDigits: 2
+  });
+  
+  return `NRs. ${formattedNumber}`;
 };
 
 /**

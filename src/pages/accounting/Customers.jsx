@@ -1,5 +1,5 @@
 import React from 'react';
-import CustomerStatement from '../components/customers/CustomerStatement';
+import CustomerStatement from "../../components/accounting/customers/CustomerStatement";
 
 const Customers = () => {
   return (
