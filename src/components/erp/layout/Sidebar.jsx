@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 const Sidebar = () => {
-  const [accountingOpen, setAccountingOpen] = useState(true);
-  const [inventoryOpen, setInventoryOpen] = useState(true);
-  const [hrOpen, setHrOpen] = useState(true);
+  // State for managing dropdown toggles
+  const [crmOpen, setCrmOpen] = useState(false);
+  const [accountingOpen, setAccountingOpen] = useState(false);
+  const [inventoryOpen, setInventoryOpen] = useState(false);
+  const [hrOpen, setHrOpen] = useState(false);
+  const [assetsOpen, setAssetsOpen] = useState(false);
+  const [procurementOpen, setProcurementOpen] = useState(false);
 
   const navLinkClasses = ({ isActive }) =>
     `flex items-center gap-3 px-3 py-2 rounded-lg transition-colors duration-150 text-sm font-medium ${
@@ -12,9 +16,9 @@ const Sidebar = () => {
     }`;
 
   return (
-    <aside className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 overflow-y-auto">
-      {/* Header */}
-      <div className="h-20 flex items-center px-6 border-b border-gray-100 flex-shrink-0">
+    <aside className="w-64 h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0 overflow-y-auto custom-scrollbar">
+      {/* Header Profile Section */}
+      <div className="h-20 flex items-center px-6 border-b border-gray-100 flex-shrink-0 sticky top-0 bg-white z-10">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-xl">E</div>
           <div>
@@ -24,43 +28,58 @@ const Sidebar = () => {
         </div>
       </div>
       
-      <nav className="flex-1 px-4 py-6 space-y-6">
-        {/* Main Dashboard */}
-        <ul className="space-y-1">
+      <nav className="flex-1 px-4 py-6 space-y-4">
+        {/* Main Dashboard & Global Links */}
+        <ul className="space-y-1 mb-4 border-b border-gray-100 pb-4">
           <li>
             <NavLink to="/dashboard" className={navLinkClasses}>
               {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>▦</span> Executive Dashboard</>)}
             </NavLink>
           </li>
+          <li>
+            <NavLink to="/analytics/dashboard" className={navLinkClasses}>
+              {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>📈</span> BI & Analytics</>)}
+            </NavLink>
+          </li>
+          <li>
+            <NavLink to="/approvals/center" className={navLinkClasses}>
+              {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>✅</span> Approval Center</>)}
+            </NavLink>
+          </li>
         </ul>
 
-        {/* Finance & Accounting Module */}
+        {/* 7. CRM Module */}
         <div>
-          <button 
-            onClick={() => setAccountingOpen(!accountingOpen)}
-            className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600"
-          >
+          <button onClick={() => setCrmOpen(!crmOpen)} className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600">
+            CRM System {crmOpen ? '▼' : '▶'}
+          </button>
+          {crmOpen && (
+            <ul className="space-y-1 pl-2 border-l-2 border-gray-100 ml-4">
+              <li><NavLink to="/crm/pipeline" className={navLinkClasses}>🎯 Sales Pipeline</NavLink></li>
+            </ul>
+          )}
+        </div>
+
+        {/* 2. Finance Module */}
+        <div>
+          <button onClick={() => setAccountingOpen(!accountingOpen)} className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600">
             Finance {accountingOpen ? '▼' : '▶'}
           </button>
           {accountingOpen && (
             <ul className="space-y-1 pl-2 border-l-2 border-gray-100 ml-4">
               <li><NavLink to="/accounting/coa" className={navLinkClasses}>📁 Chart of Accounts</NavLink></li>
               <li><NavLink to="/accounting/ledger" className={navLinkClasses}>📓 General Ledger</NavLink></li>
-              <li><NavLink to="/accounting/ar-dashboard" className={navLinkClasses}>💵 Accounts Rec. (A/R)</NavLink></li>
-              <li><NavLink to="/accounting/ap" className={navLinkClasses}>📝 Accounts Pay. (A/P)</NavLink></li>
+              <li><NavLink to="/accounting/ar-dashboard" className={navLinkClasses}>💵 A/R Dashboard</NavLink></li>
+              <li><NavLink to="/accounting/ap" className={navLinkClasses}>📝 Accounts Payable</NavLink></li>
               <li><NavLink to="/accounting/banking" className={navLinkClasses}>🏦 Banking</NavLink></li>
               <li><NavLink to="/accounting/taxes" className={navLinkClasses}>⚖️ Taxes (VAT/TDS)</NavLink></li>
-              <li><NavLink to="/accounting/reports" className={navLinkClasses}>📊 Financial Reports</NavLink></li>
             </ul>
           )}
         </div>
 
-        {/* Inventory Module */}
+        {/* 3. Inventory Module */}
         <div>
-          <button 
-            onClick={() => setInventoryOpen(!inventoryOpen)}
-            className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600"
-          >
+          <button onClick={() => setInventoryOpen(!inventoryOpen)} className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600">
             Inventory {inventoryOpen ? '▼' : '▶'}
           </button>
           {inventoryOpen && (
@@ -68,17 +87,13 @@ const Sidebar = () => {
               <li><NavLink to="/inventory/products" className={navLinkClasses}>📦 Products</NavLink></li>
               <li><NavLink to="/inventory/stock" className={navLinkClasses}>🚚 Stock Control</NavLink></li>
               <li><NavLink to="/inventory/warehouses" className={navLinkClasses}>🏢 Warehouses</NavLink></li>
-              <li><NavLink to="/inventory/reports" className={navLinkClasses}>📉 Valuation Reports</NavLink></li>
             </ul>
           )}
         </div>
 
-        {/* HR Module */}
+        {/* 4. HR Module */}
         <div>
-          <button 
-            onClick={() => setHrOpen(!hrOpen)}
-            className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600"
-          >
+          <button onClick={() => setHrOpen(!hrOpen)} className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600">
             HR System {hrOpen ? '▼' : '▶'}
           </button>
           {hrOpen && (
@@ -88,9 +103,72 @@ const Sidebar = () => {
               <li><NavLink to="/hr/attendance" className={navLinkClasses}>⏰ Attendance</NavLink></li>
               <li><NavLink to="/hr/leave" className={navLinkClasses}>⛱️ Leave Management</NavLink></li>
               <li><NavLink to="/hr/payroll" className={navLinkClasses}>💳 Payroll</NavLink></li>
-              <li><NavLink to="/hr/performance" className={navLinkClasses}>🎯 Performance & Training</NavLink></li>
             </ul>
           )}
+        </div>
+
+        {/* 5. Asset Management */}
+        <div>
+          <button onClick={() => setAssetsOpen(!assetsOpen)} className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600">
+            Assets {assetsOpen ? '▼' : '▶'}
+          </button>
+          {assetsOpen && (
+            <ul className="space-y-1 pl-2 border-l-2 border-gray-100 ml-4">
+              <li><NavLink to="/assets/tracking" className={navLinkClasses}>💻 Asset Tracking</NavLink></li>
+              <li><NavLink to="/assets/maintenance" className={navLinkClasses}>🔧 Maintenance & Depr.</NavLink></li>
+            </ul>
+          )}
+        </div>
+
+        {/* 6. Procurement System */}
+        <div>
+          <button onClick={() => setProcurementOpen(!procurementOpen)} className="w-full flex items-center justify-between text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 px-3 hover:text-gray-600">
+            Procurement {procurementOpen ? '▼' : '▶'}
+          </button>
+          {procurementOpen && (
+            <ul className="space-y-1 pl-2 border-l-2 border-gray-100 ml-4">
+              <li><NavLink to="/procurement/vendors" className={navLinkClasses}>🤝 Vendors & Contracts</NavLink></li>
+              <li><NavLink to="/procurement/requests" className={navLinkClasses}>🛒 Purchase Requests</NavLink></li>
+            </ul>
+          )}
+        </div>
+
+        {/* System Administration & Docs */}
+        <div className="mt-8 pt-4 border-t border-gray-100">
+          <ul className="space-y-1">
+            <li>
+              <NavLink to="/documents" className={navLinkClasses}>
+                {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>📂</span> Document Center</>)}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/system/roles" className={navLinkClasses}>
+                {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>🛡️</span> Roles & Permissions</>)}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/system/notifications" className={navLinkClasses}>
+                {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>🔔</span> Notifications</>)}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/audit/logs" className={navLinkClasses}>
+                {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>🔍</span> Audit & Compliance</>)}
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/settings/global" className={navLinkClasses}>
+                {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-blue-600' : 'text-gray-400'}`}>⚙️</span> Global Settings</>)}
+              </NavLink>
+            </li>
+            
+            {/* 15. AI Copilot */}
+            <li className="mt-4 pt-4 border-t border-gray-100">
+              <NavLink to="/ai/copilot" className={navLinkClasses}>
+                {({ isActive }) => (<><span className={`text-lg ${isActive ? 'text-purple-600' : 'text-gray-400'}`}>✨</span> Enterprise AI Copilot</>)}
+              </NavLink>
+            </li>
+          </ul>
         </div>
       </nav>
     </aside>

@@ -37,6 +37,27 @@ import LeaveManagement from './pages/hr/LeaveManagement';
 import Recruitment from './pages/hr/Recruitment';
 import Performance from './pages/hr/Performance';
 
+// Assets & Procurement Pages
+import AssetTracking from './pages/assets/AssetTracking';
+import AssetMaintenance from './pages/assets/AssetMaintenance';
+import Vendors from './pages/procurement/Vendors';
+import PurchaseRequests from './pages/procurement/PurchaseRequests';
+
+// CRM, Approvals & Analytics Pages
+import SalesPipeline from './pages/crm/SalesPipeline';
+import ApprovalCenter from './pages/approvals/ApprovalCenter';
+import BIDashboard from './pages/analytics/BIDashboard';
+
+// System Pages
+import DocumentCenter from './pages/documents/DocumentCenter';
+import RoleManagement from './pages/system/RoleManagement';
+import NotificationCenter from './pages/system/NotificationCenter';
+
+// Settings Pages
+import GlobalSettings from './pages/settings/GlobalSettings';
+import AuditLogs from './pages/audit/AuditLogs';
+import EnterpriseAI from './pages/ai/EnterpriseAI';
+
 function App() {
   return (
     <Router>
@@ -75,8 +96,33 @@ function App() {
           <Route path="/hr/recruitment" element={<Recruitment />} />
           <Route path="/hr/performance" element={<Performance />} />
 
+          {/* Assets & Procurement Routes */}
+          <Route path="/assets/tracking" element={<AssetTracking />} />
+          <Route path="/assets/maintenance" element={<AssetMaintenance />} />
+          <Route path="/procurement/vendors" element={<Vendors />} />
+          <Route path="/procurement/requests" element={<PurchaseRequests />} />
+
+          {/* CRM, Approvals & Analytics Routes */}
+          <Route path="/crm/sales-pipeline" element={<SalesPipeline />} />
+          <Route path="/approvals" element={<ApprovalCenter />} />
+          <Route path="/analytics/bi" element={<BIDashboard />} />
+
+          {/* Documents */}
+          <Route path="/documents" element={<DocumentCenter />} />
+
+          {/* AI & Machine Learning */}
+          <Route path="/ai/enterprise" element={<EnterpriseAI />} />
+
+          {/* Audit Logs */}
+          <Route path="/audit/logs" element={<AuditLogs />} />
+
+          {/* Settings */}
+          <Route path="/settings" element={<GlobalSettings />} />
+
           {/* System */}
           <Route path="/settings" element={<Settings />} />
+          <Route path="/system/roles" element={<RoleManagement />} />
+          <Route path="/system/notifications" element={<NotificationCenter />} />
         </Routes>
       </Layout>
     </Router>

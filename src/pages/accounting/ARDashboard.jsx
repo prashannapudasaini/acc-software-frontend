@@ -1,74 +1,70 @@
 import React from 'react';
-import MetricCard from '../../components/erp/dashboard/MetricCard';
-import TrendChart from '../../components/erp/dashboard/TrendChart';
-import AgingChart from '../../components/erp/dashboard/AgingChart';
-import CashFlowChart from '../../components/erp/dashboard/CashFlowChart';
+import { useFinance } from '../../context/FinanceContext';
+import { Card, CardContent } from '../../components/erp/ui/Card';
+import Button from '../../components/erp/ui/Button';
 
 const ARDashboard = () => {
+  const { invoices } = useFinance();
+
+  const totalOutstanding = invoices.filter(i => i.status === 'Unpaid').reduce((sum, i) => sum + i.amount, 0);
+  const overdueCount = invoices.filter(i => i.status === 'Unpaid').length; // Simplification for demo
+
   return (
-    <div className="space-y-6">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-500 text-sm mt-1">Welcome back, John! Here's what's happening with your accounts receivable today.</p>
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-2xl font-bold">A/R Dashboard</h1>
+          <p className="text-sm text-gray-500">Accounts Receivable overview and collection metrics.</p>
+        </div>
+        <Button variant="outline">Send Payment Reminders</Button>
       </div>
 
-      {/* Top KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <MetricCard 
-          title="Total Outstanding" 
-          value="NRs. 124,563.00" 
-          icon="💵" 
-          iconBgColor="bg-blue-600"
-          trendValue="12.5" 
-          trendDirection="up" 
-        />
-        <MetricCard 
-          title="Overdue Balances" 
-          value="NRs. 68,654.00" 
-          icon="⚠️" 
-          iconBgColor="bg-red-500"
-          trendValue="8.2" 
-          trendDirection="up" 
-        />
-        <MetricCard 
-          title="Cash Received (MTD)" 
-          value="NRs. 55,909.00" 
-          icon="💰" 
-          iconBgColor="bg-green-500"
-          trendValue="18.7" 
-          trendDirection="up" 
-        />
-        <MetricCard 
-          title="Total Customers" 
-          value="248" 
-          icon="👥" 
-          iconBgColor="bg-purple-500"
-          trendValue="7.3" 
-          trendDirection="up" 
-        />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="border-t-4 border-t-blue-500 shadow-sm">
+          <CardContent className="p-6">
+            <h3 className="font-bold text-gray-500 text-sm uppercase mb-1">Total Outstanding</h3>
+            <p className="text-3xl font-bold text-blue-600">NRs. {totalOutstanding.toLocaleString()}</p>
+          </CardContent>
+        </Card>
+        
+        <Card className="border-t-4 border-t-red-500 shadow-sm">
+          <CardContent className="p-6">
+            <h3 className="font-bold text-gray-500 text-sm uppercase mb-1">Total Overdue</h3>
+            <p className="text-3xl font-bold text-red-600">NRs. {totalOutstanding.toLocaleString()}</p>
+            <p className="text-xs text-red-500 mt-2 font-bold">{overdueCount} Invoices require attention</p>
+          </CardContent>
+        </Card>
+
+        <Card className="border-t-4 border-t-green-500 shadow-sm">
+          <CardContent className="p-6">
+            <h3 className="font-bold text-gray-500 text-sm uppercase mb-1">Collected This Month</h3>
+            <p className="text-3xl font-bold text-green-600">NRs. 450,000</p>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Middle Section: Adjusted Grid for Layout Fix */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
-        {/* Trend takes 7/12 columns to shrink slightly */}
-        <div className="xl:col-span-7">
-          <TrendChart />
-        </div>
-        {/* Aging takes 5/12 columns to fit the legend properly */}
-        <div className="xl:col-span-5">
-          <AgingChart />
-        </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <CashFlowChart />
-        <div className="bg-white rounded-2xl p-6 border border-gray-100 shadow-sm xl:col-span-2">
-          <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h2>
-          <div className="text-center text-gray-500 py-12 border-2 border-dashed border-gray-200 rounded-xl">
-            Activity timeline will appear here
-          </div>
-        </div>
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+        <h2 className="font-bold mb-4">Recent Unpaid Invoices</h2>
+        <table className="w-full text-left text-sm">
+          <thead className="bg-gray-50 uppercase text-gray-500 text-xs">
+            <tr>
+              <th className="px-6 py-4">Invoice #</th>
+              <th className="px-6 py-4">Customer</th>
+              <th className="px-6 py-4 text-right">Amount</th>
+              <th className="px-6 py-4 text-center">Action</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {invoices.filter(i => i.status === 'Unpaid').map(inv => (
+              <tr key={inv.id}>
+                <td className="px-6 py-4 font-mono font-bold text-gray-700">{inv.id}</td>
+                <td className="px-6 py-4">{inv.customer}</td>
+                <td className="px-6 py-4 text-right font-bold text-red-600">NRs. {inv.amount.toLocaleString()}</td>
+                <td className="px-6 py-4 text-center"><Button variant="outline" size="sm">Receive Payment</Button></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

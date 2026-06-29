@@ -1,111 +1,77 @@
-import React, { useState } from 'react';
-import Button from '../../components/erp/ui/Button';
+import React from 'react';
+import { useFinance } from '../../context/FinanceContext';
+import { Card, CardContent, CardHeader } from '../../components/erp/ui/Card';
 
 const FinancialReports = () => {
-  const [activeTab, setActiveTab] = useState('pl');
+  const { accounts } = useFinance();
+
+  // Aggregate Balances dynamically
+  const calcTotal = (type) => Object.values(accounts).filter(a => a.type === type).reduce((sum, a) => sum + a.balance, 0);
+  
+  const totalAssets = calcTotal('Assets');
+  const totalLiabilities = calcTotal('Liabilities');
+  const totalEquity = calcTotal('Equity');
+  const totalRevenue = calcTotal('Revenue');
+  const totalExpenses = calcTotal('Expenses');
+  
+  const netIncome = totalRevenue - totalExpenses;
+  // Accounting check: Assets = Liabilities + Equity + Net Income
+  const isBalanced = totalAssets === (totalLiabilities + totalEquity + netIncome);
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Financial Reports</h1>
-          <p className="text-gray-500 text-sm mt-1">Generate and view your core financial statements.</p>
-        </div>
-        <Button variant="outline" icon={<span className="mr-1">📥</span>}>Export PDF</Button>
+      <div>
+        <h1 className="text-2xl font-bold">Financial Statements</h1>
+        <p className="text-sm text-gray-500">Generated in real-time from the General Ledger.</p>
       </div>
 
-      {/* Report Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="flex gap-6">
-          <button 
-            onClick={() => setActiveTab('pl')}
-            className={`py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'pl' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-          >
-            Profit & Loss
-          </button>
-          <button 
-            onClick={() => setActiveTab('bs')}
-            className={`py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'bs' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-          >
-            Balance Sheet
-          </button>
-          <button 
-            onClick={() => setActiveTab('cf')}
-            className={`py-3 text-sm font-medium border-b-2 transition-colors ${activeTab === 'cf' ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'}`}
-          >
-            Cash Flow Statement
-          </button>
-        </nav>
-      </div>
-
-      {/* Report Content area */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-8 max-w-4xl mx-auto">
-        
-        {/* Profit & Loss View */}
-        {activeTab === 'pl' && (
-          <div>
-            <div className="text-center mb-8">
-              <h2 className="text-xl font-bold text-gray-900">NexusERP Solutions</h2>
-              <h3 className="text-lg text-gray-600">Profit and Loss (Income Statement)</h3>
-              <p className="text-sm text-gray-500">For the period: Jan 01, 2026 - Jun 28, 2026</p>
-            </div>
-
-            <div className="space-y-6 text-sm">
-              {/* Income */}
-              <div>
-                <h4 className="font-bold text-gray-900 border-b border-gray-200 pb-2 mb-2">Operating Income</h4>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Sales Revenue</span><span>NRs. 920,000.00</span></div>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Service Revenue</span><span>NRs. 150,000.00</span></div>
-                <div className="flex justify-between py-2 font-bold text-gray-900 mt-2 bg-gray-50 px-2 rounded"><span>Total Income</span><span>NRs. 1,070,000.00</span></div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Income Statement */}
+        <Card className="shadow-sm">
+          <CardHeader title="Income Statement (Profit & Loss)" />
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-bold text-gray-700">Total Revenue</span>
+                <span className="font-bold">NRs. {totalRevenue.toLocaleString()}</span>
               </div>
-
-              {/* COGS */}
-              <div>
-                <h4 className="font-bold text-gray-900 border-b border-gray-200 pb-2 mb-2">Cost of Goods Sold (COGS)</h4>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Materials</span><span>NRs. 210,000.00</span></div>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Direct Labor</span><span>NRs. 140,000.00</span></div>
-                <div className="flex justify-between py-2 font-bold text-gray-900 mt-2 bg-gray-50 px-2 rounded"><span>Total COGS</span><span>NRs. 350,000.00</span></div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-bold text-gray-700">Total Expenses</span>
+                <span className="font-bold text-red-600">(NRs. {totalExpenses.toLocaleString()})</span>
               </div>
-              
-              {/* Gross Profit */}
-              <div className="flex justify-between py-3 font-bold text-blue-900 text-base border-y-2 border-gray-200">
-                <span>Gross Profit</span><span>NRs. 720,000.00</span>
-              </div>
-
-              {/* Expenses */}
-              <div>
-                <h4 className="font-bold text-gray-900 border-b border-gray-200 pb-2 mb-2">Operating Expenses</h4>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Rent & Utilities</span><span>NRs. 85,000.00</span></div>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Payroll</span><span>NRs. 180,000.00</span></div>
-                <div className="flex justify-between py-1 text-gray-600 pl-4"><span>Marketing</span><span>NRs. 45,000.00</span></div>
-                <div className="flex justify-between py-2 font-bold text-gray-900 mt-2 bg-gray-50 px-2 rounded"><span>Total Expenses</span><span>NRs. 310,000.00</span></div>
-              </div>
-
-              {/* Net Income */}
-              <div className="flex justify-between py-3 font-bold text-green-700 text-lg border-y-2 border-green-200 bg-green-50 px-4 rounded">
-                <span>Net Profit / (Loss)</span><span>NRs. 410,000.00</span>
+              <div className="flex justify-between bg-gray-50 p-3 rounded-lg border">
+                <span className="font-bold text-lg text-gray-900">Net Income</span>
+                <span className={`font-bold text-lg ${netIncome >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  NRs. {netIncome.toLocaleString()}
+                </span>
               </div>
             </div>
-          </div>
-        )}
+          </CardContent>
+        </Card>
 
-        {/* Balance Sheet View */}
-        {activeTab === 'bs' && (
-          <div className="text-center py-12">
-            <span className="text-4xl">⚖️</span>
-            <h3 className="text-lg font-bold mt-4">Balance Sheet View</h3>
-            <p className="text-gray-500">Assets = Liabilities + Equity formatting structure will load here.</p>
-          </div>
-        )}
-
-        {/* Cash Flow View */}
-        {activeTab === 'cf' && (
-          <div className="text-center py-12">
-            <span className="text-4xl">🌊</span>
-            <h3 className="text-lg font-bold mt-4">Cash Flow Statement</h3>
-            <p className="text-gray-500">Operating, Investing, and Financing activities will load here.</p>
-          </div>
-        )}
+        {/* Balance Sheet */}
+        <Card className="shadow-sm">
+          <CardHeader title="Balance Sheet" />
+          <CardContent className="p-6">
+            <div className="space-y-4">
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-bold text-gray-700">Total Assets</span>
+                <span className="font-bold text-blue-600">NRs. {totalAssets.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-bold text-gray-700">Total Liabilities</span>
+                <span className="font-bold">NRs. {totalLiabilities.toLocaleString()}</span>
+              </div>
+              <div className="flex justify-between border-b pb-2">
+                <span className="font-bold text-gray-700">Total Equity (inc. Net Income)</span>
+                <span className="font-bold">NRs. {(totalEquity + netIncome).toLocaleString()}</span>
+              </div>
+              <div className={`mt-4 text-xs font-bold p-2 text-center rounded ${isBalanced ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                {isBalanced ? '✓ Balance Sheet is Balanced' : '⚠️ Warning: Balance Sheet Mismatch'}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
